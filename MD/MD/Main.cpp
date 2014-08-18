@@ -38,7 +38,6 @@ clock_t tStart = clock();
 
 	cout << "Allocating memory...\n";
 	//int m1, int n1, int m2, int n2
-	//FastEnsemble crystal(40,750,40,750);
 	FastEnsemble crystal(40,500,40,500);
 	
 	cout << "Generating crystal...\n";
@@ -46,16 +45,12 @@ clock_t tStart = clock();
 	crystal.SetSteadyStateTemperature(Temperature);
 
 	cout << crystal.GetNumberOfIons();
-	// running sim
+	// Starting up the simulation 
 	cout << " ions using steps with length = " << dt << "s\n";
-	
+
+	// Create the integrator.
 	MADSDynamicTemperatureLeFrogintegrator(crystal, TimeSteps, Vrf, Vend);
-	//DynamicTemperatureLeFrogintegrator(crystal, TimeSteps, Vrf, Vend);
-
-
-	//OLDCudaLeFrogintegrator(crystal,TimeSteps,Vrf,Vend);
-	//CudaLeFrogintegrator(crystal,TimeSteps,Vrf,Vend);
-
+	
 	printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
 	cout << "DONE with simulation\n";
@@ -119,7 +114,7 @@ clock_t tStart = clock();
 
 	cout << "Ion data done" << endl;
 	// cleaning up
-    //crystal.FreeTemperatureArrays(); // May haveing this not in helps.
+    //crystal.FreeTemperatureArrays(); // maybe having this in, helps.
 	
 	cout << "Arrays freed" << endl;
 

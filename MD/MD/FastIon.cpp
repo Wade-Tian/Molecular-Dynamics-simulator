@@ -17,32 +17,13 @@ void FastIon::CleanUpIon()
 	delete Vel;
 }
 
-double FastIon::ReturnVzSec()
-{
-	return VzSec;
-}
-
-double FastIon::ReturnVxSec()
-{
-	return VxSec;
-}
-
-double FastIon::ReturnVySec()
-{
-	return VySec;
-}
-
 void FastIon::initialize(int mass) // setting mass and allocating memory
 {
 	m = mass*u2kg;  // mass should always be in u
 
-
-	VzSec = 0; // setting secular temperature to zero
-
 	Pos = new double [3];
 	Vel = new double [3];
 }
-
 
 void FastIon::SetPosition(int dim, double Val) // set position
 {
@@ -59,16 +40,10 @@ double FastIon::GetMass()
 	return m; // In kg
 }
 
-double FastIon::GetVsec()
-{
-	return Vsec;
-}
-
 double FastIon::Position(int dim) // change name to get at some point
 {
 	return Pos[dim];
 }
-
 
 double FastIon::Velocity(int dim)
 {
@@ -84,7 +59,6 @@ double FastIon::Ekin()
 {
 	return 0.5*m*pow(pow(Vel[0],2) + pow(Vel[1],2) + pow(Vel[2],2),2);
 }
-
 
 // Friend functions
 double DistanceSquar(FastIon & ion1, FastIon & ion2)
