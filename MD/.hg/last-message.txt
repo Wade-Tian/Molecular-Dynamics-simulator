@@ -1,0 +1,7 @@
+This is the first upload of the portable MD program. 
+The follow files can be used on a CUDA machine with visual studio
+to compile a working MD program. 
+
+No GUI yet or anything, just a working version that kan be change in the Main.cpp.
+Remember to have CUDA installed!
+- Mads R.
