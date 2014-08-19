@@ -10,6 +10,18 @@
 using namespace std;
 
 // Constructor
+FastEnsemble::FastEnsemble(int mass, int N)
+{
+	SteadyStateTemperature = SteadyStateTzSec;
+	NumberOfIons = N;
+	ions = new FastIon [NumberOfIons];
+
+	for(int n = 0; n < NumberOfIons; n++)
+	{
+		ions[n].initialize(mass);
+	}
+}
+
 FastEnsemble::FastEnsemble(int m1, int n1, int m2, int n2)
 {
 	SteadyStateTemperature = SteadyStateTzSec;

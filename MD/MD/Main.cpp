@@ -12,7 +12,7 @@
 #include "FastEnsemble.h"
 #include "integrator.h"
 #include "constants.h"
-
+#include "Simulator.h"
 // To save files.
 #include <vector>
 #include <iostream>
@@ -27,6 +27,10 @@ using namespace std;
 
 int main()
 {
+	Simulator sim();
+
+
+	/*
 clock_t tStart = clock();
 
 	double Vrf = 220;
@@ -123,11 +127,9 @@ clock_t tStart = clock();
 	cout << "Quest completed! I mean data saved!\n";
 	cout << "Press a key to end the program\n";
 
+	*/
+
 
 	cin.get();
-	
-	
-
-
 	return 0;
 }

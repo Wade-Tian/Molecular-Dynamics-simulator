@@ -22,19 +22,23 @@
     <ClInclude Include="BisectionRootFinder.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="cudaforces.cuh" />
+    <ClInclude Include="DataPrinter.h" />
     <ClInclude Include="FastEnsemble.h" />
     <ClInclude Include="FastIon.h" />
     <ClInclude Include="forces.h" />
     <ClInclude Include="integrator.h" />
+    <ClInclude Include="Simulator.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BisectionRootFinder.cpp" />
+    <ClCompile Include="DataPrinter.cpp" />
     <ClCompile Include="FastEnsemble.cpp" />
     <ClCompile Include="FastIon.cpp" />
     <ClCompile Include="forces.cpp" />
     <ClCompile Include="integrator.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Simulator.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>

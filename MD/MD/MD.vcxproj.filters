@@ -33,6 +33,10 @@
     <ClInclude Include="cudaforces.cuh">
       <Filter>Source files</Filter>
     </ClInclude>
+    <ClInclude Include="Simulator.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPrinter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BisectionRootFinder.cpp">
@@ -56,6 +60,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="Simulator.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataPrinter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="cuSource.cu">

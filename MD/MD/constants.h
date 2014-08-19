@@ -52,8 +52,13 @@ const double StepsPrPeriode = 105;//105;  // 105 er fint. evt 25 45?
 const double dt = 1/(OmegaRF/2/PI)/StepsPrPeriode;
 //const double dt = 1/(OmegaRF/2/PI)/StepsPrPeriode; //psedoTime
 
-// Old bin size : 200 - 200 - 520 
+// Pixel size - that is the length of each bin in the 3d histogram
+const double PixelToDistance = 0.89e-6;
 
+// THESE SHOULD NOT BE IN HERE
+
+// After this timestep we should start building the histogram
+const int StartRecordingHistogram = 460000;
 // Number of bins in 3d histogram
 
 // For sphere
@@ -67,11 +72,5 @@ const int HistNx = 250;
 const int HistNy = 250; // x and y should be the same...
 const int HistNz = 250;
 */
-
-// Pixel size - that is the length of each bin in the 3d histogram
-const double PixelToDistance = 0.89e-6;
-
-// After this timestep we should start building the histogram
-const int StartRecordingHistogram = 460000;
 
 #endif /* CONSTANTS_H_ */

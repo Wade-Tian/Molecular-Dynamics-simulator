@@ -28,6 +28,7 @@ public:
 
 //public:
 	// constructor
+	FastEnsemble(int mass, int N);
 	FastEnsemble(int m1, int n1, int m2, int n2);
 	// Member functions
 	void CrystalGenerator(double Vrf, double Vend); // set ions initial positions in grid and set initial velocities using the plasma model in bcc structure - under construction
