@@ -31,16 +31,8 @@ const double r0 = 0.00235;	// electrode inscribed radius in m
 const double z0 = 0.0025;  	// center electrode length in m
 const double eta = 0.342; 	// Axial geometrical constant
 
-// Grid spacing in String Crystal generator - outdated
-const double GridSpacing = 20e-6;
-const double Tinitial = 0.010*0; // initial temperature, Skal den være 0 ?
-
 // friction coefficient (laser-cooling)
-//const double beta=1.430e-20;
 const double beta=2e-22; //The real factor
-
-// random velocity kick
-const double vkick = 0*2.68e-6;
 
 // Default temperature - when not specified by SetSteadyStateTemperature or not using friction force!
 const double SteadyStateTzSec = 0.01; // in Kelvin
@@ -58,13 +50,13 @@ const double PixelToDistance = 0.89e-6;
 // THESE SHOULD NOT BE IN HERE
 
 // After this timestep we should start building the histogram
-const int StartRecordingHistogram = 460000;
+//const int StartRecordingHistogram = 460000;
 // Number of bins in 3d histogram
 
 // For sphere
-const int HistNx = 200;
-const int HistNy = 200; // x and y should be the same...
-const int HistNz = 620;
+//const int HistNx = 200;
+//const int HistNy = 200; // x and y should be the same...
+//const int HistNz = 620;
 /*
 // For Oval (Normal crystal
 // Number of bins in 3d histogram

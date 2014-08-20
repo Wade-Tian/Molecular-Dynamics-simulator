@@ -10,8 +10,11 @@
 using namespace std;
 
 // Constructor
-FastEnsemble::FastEnsemble(int mass, int N)
+FastEnsemble::FastEnsemble(int mass, int N, int histx,int histy, int histz)
 {
+	HistNx = histx;
+	HistNy = histy;
+	HistNz = histz;
 	SteadyStateTemperature = SteadyStateTzSec;
 	NumberOfIons = N;
 	ions = new FastIon [NumberOfIons];

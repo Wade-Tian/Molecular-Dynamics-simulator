@@ -14,8 +14,9 @@
 using namespace std;
 
 // The Integrator that should be used.
-void MADSDynamicTemperatureLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, double Vrf, double Vend)
+void MADSDynamicTemperatureLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, int StartHistograms, double Vrf, double Vend)
 {
+	int StartRecordingHistogram = StartHistograms;
 	// allocate memory to the histogram
 	ensemble.InitialiseHistogram();
 	ensemble.InitialiseVelocityHistogram();
@@ -370,8 +371,9 @@ void MADSDynamicTemperatureLeFrogintegrator(FastEnsemble & ensemble, int TimeSte
 }
 
 // Eksperimental integrator.
-void TauPeriodeCudaLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, double Vrf, double Vend)
+void TauPeriodeCudaLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, int StartHistograms, double Vrf, double Vend)
 {
+	int StartRecordingHistogram = StartHistograms;
 	// allocate memory to the histogram
 	ensemble.InitialiseHistogram();
 	ensemble.InitialiseVelocityHistogram();

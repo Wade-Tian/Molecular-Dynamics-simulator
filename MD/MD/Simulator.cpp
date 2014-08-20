@@ -120,12 +120,12 @@ void Simulator::StartSimulation()
 		// If the sim is allowed to run, now the relevant funktions will be called and the simulation will start.
 
 		// Building the crystal.
-		FastEnsemble crystal(MassOfIons,NumberOfIons);
+		FastEnsemble crystal(MassOfIons,NumberOfIons,SizeOfHistogramsX,SizeOfHistogramsY,SizeOfHistogramsZ);
 		crystal.CrystalGenerator(RFVoltage,ECVoltage);
 		crystal.SetSteadyStateTemperature(SimulatedTemperatur);
 
 		// Starting the Integrator with the generate crystal.
-		MADSDynamicTemperatureLeFrogintegrator(crystal, Timesteps, RFVoltage, ECVoltage);
+		MADSDynamicTemperatureLeFrogintegrator(crystal, Timesteps, StartRecordingOfHistogram , RFVoltage, ECVoltage);
 
 		// Printing the data files.
 		DataPrinter(crystal,SizeOfHistogramsX,SizeOfHistogramsY,SizeOfHistogramsZ);

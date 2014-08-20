@@ -26,9 +26,13 @@ public:
 	double Radius;					// Radius of crystal.
 	double Length;					// Length of the crystal
 
+	int HistNx;
+    int HistNy; 
+    int HistNz;
+
 //public:
 	// constructor
-	FastEnsemble(int mass, int N);
+	FastEnsemble(int mass, int N,int histx,int histy, int histz);
 	FastEnsemble(int m1, int n1, int m2, int n2);
 	// Member functions
 	void CrystalGenerator(double Vrf, double Vend); // set ions initial positions in grid and set initial velocities using the plasma model in bcc structure - under construction

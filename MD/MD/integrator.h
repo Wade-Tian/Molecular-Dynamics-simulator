@@ -7,6 +7,6 @@
 #include <cstring>
 #include <iostream>
 
-void MADSDynamicTemperatureLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, double Vrf, double Vend); // Testing temperature control as in articles
-void TauPeriodeCudaLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, double Vrf, double Vend);
+void MADSDynamicTemperatureLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps, int StartHistograms, double Vrf, double Vend); // Testing temperature control as in articles
+void TauPeriodeCudaLeFrogintegrator(FastEnsemble & ensemble, int TimeSteps,int StartHistograms, double Vrf, double Vend);
 #endif
