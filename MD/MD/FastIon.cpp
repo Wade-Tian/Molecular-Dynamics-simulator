@@ -17,10 +17,10 @@ void FastIon::CleanUpIon()
 	delete Vel;
 }
 
-void FastIon::initialize(int mass) // setting mass and allocating memory
+void FastIon::initialize(int mass, double c) // setting mass and allocating memory
 {
 	m = mass*u2kg;  // mass should always be in u
-
+	charge = c*e;
 	Pos = new double [3];
 	Vel = new double [3];
 }
@@ -38,6 +38,11 @@ void FastIon::SetVelocity(int dim, double Val) // set position
 double FastIon::GetMass()
 {
 	return m; // In kg
+}
+
+double FastIon::GetCharge()
+{
+	return charge; // In Coulomb
 }
 
 double FastIon::Position(int dim) // change name to get at some point

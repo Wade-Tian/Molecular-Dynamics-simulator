@@ -9,9 +9,9 @@
 using namespace std;
 
 
-double Ftot(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend)
+double Ftot(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend, double dt)
 {
-	return  Fcoulumb(ensemble, N, dim) + Ftrap(ensemble, N, TimeStep, dim, Vrf, Vend);
+	return  Fcoulumb(ensemble, N, dim) + Ftrap(ensemble, N, TimeStep, dim, Vrf, Vend,dt);
 }
 
 
@@ -28,16 +28,16 @@ double Fcoulumb(FastEnsemble & ensemble, int N, int dim)
 
 
 
-double Ftrap(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend) // fix units, do some thing smart with dt ie make a table
+double Ftrap(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend,double dt) // fix units, do some thing smart with dt ie make a table
 {
 	if (dim == 0) // x
-		return e*((eta*Vend/pow(z0,2) - Vrf*cos(OmegaRF*TimeStep*dt)/pow(r0,2))*ensemble.ions[N].Pos[dim]);
+		return ensemble.ions[0].GetCharge()*((ensemble.eta*Vend/pow(ensemble.z0,2) - Vrf*cos(ensemble.OmegaRF*TimeStep*dt)/pow(ensemble.r0,2))*ensemble.ions[N].Pos[dim]);
 
 	if (dim == 1) // y
-		return e*(eta*Vend/pow(z0,2) + Vrf/pow(r0,2)*cos(OmegaRF*TimeStep*dt))*ensemble.ions[N].Pos[dim];
+		return ensemble.ions[0].GetCharge()*(ensemble.eta*Vend/pow(ensemble.z0,2) + Vrf/pow(ensemble.r0,2)*cos(ensemble.OmegaRF*TimeStep*dt))*ensemble.ions[N].Pos[dim];
 
 	if (dim == 2) // z
-		return -2*e*eta*Vend/pow(z0,2)*ensemble.ions[N].Pos[dim];
+		return -2*ensemble.ions[0].GetCharge()*ensemble.eta*Vend/pow(ensemble.z0,2)*ensemble.ions[N].Pos[dim];
 
 	return NULL;
 }
@@ -52,7 +52,7 @@ double Ffriction(FastEnsemble & ensemble, int N, int dim)
 }
 
 
-
+/*
 double Fpseudo(FastEnsemble & ensemble, int N, int dim, double Vrf, double Vend)
 {
 	double wz2=2*eta*e*Vend/pow(z0,2)/ensemble.Mass(N); // ERROR in formula from Magnus' thesis! he means potential and not electric potential.
@@ -68,4 +68,6 @@ double Fpseudo(FastEnsemble & ensemble, int N, int dim, double Vrf, double Vend)
 		return -ensemble.Mass(N)*wz2*ensemble.Position(2,N);
 
 	return NULL;
+
 }
+*/

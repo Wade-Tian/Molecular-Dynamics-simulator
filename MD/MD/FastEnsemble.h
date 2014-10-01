@@ -26,14 +26,27 @@ public:
 	double Radius;					// Radius of crystal.
 	double Length;					// Length of the crystal
 
+	long double ****histograms;
+
 	int HistNx;
     int HistNy; 
     int HistNz;
+	double r0;
+	double z0;
+	double eta;
+	double PixelToDistance;
+	double OmegaRF;
+	double t0;
+
+
+	int IonOneN;
+	int IonTwoN;
+	double ReducedMass;
 
 //public:
 	// constructor
-	FastEnsemble(int mass, int N,int histx,int histy, int histz);
-	FastEnsemble(int m1, int n1, int m2, int n2);
+	FastEnsemble(int mass, int N, int histx,int histy, int histz,double vel0, double c, double R0, double Z0, double ETA,double wRF, double BinSize);
+	FastEnsemble(int m1, int n1, int m2, int n2,int histx,int histy, int histz,double vel0, double c1, double c2, double R0, double Z0, double ETA,double wRF, double BinSize);
 	// Member functions
 	void CrystalGenerator(double Vrf, double Vend); // set ions initial positions in grid and set initial velocities using the plasma model in bcc structure - under construction
 	void RescaleVelocityXYZ(double Total_V_x_rms, double Total_V_y_rms,double Total_V_z_rms);
@@ -49,7 +62,7 @@ public:
 	double GetCurrentTemperature();
 	double Ekin(); // return total kinetic energy of crystal for given time step
 	double Ttot(); // return total temperature of crystal for given time step
-
+	double GetOmegaRF();
 	// Histogram and data functions
 	void SavePositionToFile();
 	void SaveIonDataToFile();
@@ -60,6 +73,11 @@ public:
 	void InitialiseCountHistogram();
 	void UpdateHistogram();
 	void UpdateCountHistogram();
+
+	void InitialiseHistograms();
+	void UpdateVelandCountHistograms();
+	void UpdateHistograms();
+
 	double ReturnHist(int i, int j, int k); //returning value of bin (i,j,k) in histogram
 	double ReturnVelHist(int i, int j, int k); //returning value of bin (i,j,k) in histogram
 	double ReturnCountHist(int i, int j, int k);
@@ -67,7 +85,7 @@ public:
 	// friend function
 	friend double DistanceSquar(FastIon & ion1, FastIon & ion2);
 	friend double Distance(FastIon & ion1, FastIon & ion2);
-	friend double Ftrap(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend);
+	friend double Ftrap(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend,double dt);
 	friend double Fcoulumb(FastEnsemble & ensemble, int N, int dim);
 	friend double Ffriction(FastEnsemble & ensemble, int N, int dim);
 };

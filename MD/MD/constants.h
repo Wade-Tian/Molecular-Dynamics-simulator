@@ -26,10 +26,10 @@ const float fKb = 1.380650424e-23; // Boltzman konstant
 const float fu2kg = 1.66053878283e-27; // unit to kg
 
 // trap constants
-const double OmegaRF = 2*PI*4.01e6; // rf freq. in Hz
-const double r0 = 0.00235;	// electrode inscribed radius in m
-const double z0 = 0.0025;  	// center electrode length in m
-const double eta = 0.342; 	// Axial geometrical constant
+//const double OmegaRF = 2*PI*4.01e6; // rf freq. in Hz
+//const double r0 = 0.00235;	// electrode inscribed radius in m
+//const double z0 = 0.0025;  	// center electrode length in m
+//const double eta = 0.342; 	// Axial geometrical constant
 
 // friction coefficient (laser-cooling)
 const double beta=2e-22; //The real factor
@@ -38,14 +38,14 @@ const double beta=2e-22; //The real factor
 const double SteadyStateTzSec = 0.01; // in Kelvin
 
 // timesteps pr rf-cycle
-const double StepsPrPeriode = 105;//105;  // 105 er fint. evt 25 45?
+//const double StepsPrPeriode = 105;//105;  // 105 er fint. evt 25 45?
 
 // time step
-const double dt = 1/(OmegaRF/2/PI)/StepsPrPeriode;
+//const double dt = 1/(OmegaRF/2/PI)/StepsPrPeriode;
 //const double dt = 1/(OmegaRF/2/PI)/StepsPrPeriode; //psedoTime
 
 // Pixel size - that is the length of each bin in the 3d histogram
-const double PixelToDistance = 0.89e-6;
+//const double PixelToDistance = 0.89e-6;
 
 // THESE SHOULD NOT BE IN HERE
 

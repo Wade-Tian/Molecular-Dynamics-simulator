@@ -1,6 +1,4 @@
 // MolecularDynamics.cpp : Defines the entry point for the console application.
-//
-
 // include from making project in VS-10
 #include "stdafx.h"
 #include <stdio.h>
@@ -23,113 +21,144 @@
 using namespace std;
 
 
-// unix main
-
-int main()
-{
-	Simulator sim();
-
-
-	/*
-clock_t tStart = clock();
-
-	double Vrf = 220;
-	double Vend = 3.1; //Kugle = 18. Oval = 3.1
-	// HUSK AT TJEKKE starthist når timesteps ændres! (LAV DET AUTO))
-	int TimeSteps = 550000;//100000; //  Scale : 10000 = 0.1ms 
-	double Temperature = 0.00671;	 // Scale is 0.01 = 10mK eller 0.001 = 1mK	    
-
-
-	cout << "Allocating memory...\n";
-	//int m1, int n1, int m2, int n2
-	FastEnsemble crystal(40,500,40,500);
-	
-	cout << "Generating crystal...\n";
-	crystal.CrystalGenerator(Vrf,Vend);
-	crystal.SetSteadyStateTemperature(Temperature);
-
-	cout << crystal.GetNumberOfIons();
-	// Starting up the simulation 
-	cout << " ions using steps with length = " << dt << "s\n";
-
-	// Create the integrator.
-	MADSDynamicTemperatureLeFrogintegrator(crystal, TimeSteps, Vrf, Vend);
-	
-	printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-
-	cout << "DONE with simulation\n";
-	cout << "Now saving to datafiles\n";
-	
-	// Saves histogram data to file
-	ofstream Histogramfile ("HistogramData.txt");
-	Histogramfile << "Bin  i j k" << endl ;
-
-	ofstream VHistfile ("VelocityHistogramData.txt");
-	VHistfile << "Sum of all velocity in this bin  i \t j \t k" << endl ;
-
-	ofstream CHistfile ("CountHistogramData.txt");
-	CHistfile << "bin  i j k" << endl ;
-
-	for(int i=0; i < HistNx; i++)
+int main(int argc, char* argv[])
+{	
+	if (argc < 19) 
 	{
-		for(int j=0; j < HistNy; j++)
-		{
-			for(int k=0; k < HistNz; k++)
-			{
-				if (Histogramfile.is_open())
-				{
-					Histogramfile	<< crystal.ReturnHist(i, j, k)				<< ",  " 
-									<< i										<< ",  " 
-									<< j										<< ",  " 
-									<< k				
-									<< endl;
-
-				}
-				if (VHistfile.is_open())
-				{
-					VHistfile		<< crystal.ReturnVelHist(i, j, k)			<< ",  " 
-									<< i										<< ",  " 
-									<< j										<< ",  " 
-									<< k				
-									<< endl;
-
-				}
-				if (CHistfile.is_open())
-				{
-					CHistfile		<< crystal.ReturnCountHist(i, j, k)			<< ",  " 
-									<< i										<< ",  " 
-									<< j										<< ",  " 
-									<< k				
-									<< endl;
-
-				}
-			}
-		}
+		cout << "Not enough arguments: " <<  argc << endl;
+		cout << " press a button to stop the program" << endl;
+		cin.get();
+		return 0;
 	}
+	if (argc == 19 )
+	{
+	cout << "The program is trying to start!" << endl;
 
-	Histogramfile.close();
-	VHistfile.close();
-	CHistfile.close();
-    
-	cout << "Histograms done" << endl;
+	double RFVoltage			= strtod(argv[1], 0);
+	double ECVoltage			= strtod(argv[2], 0);
+	double SimulatedTemperatur	= strtod(argv[3], 0);
+	double StartVelOfIons		= strtod(argv[4], 0);
+	int NumberOfIons			=  atoi(argv[5]);
+	int MassOfIons				=  atoi(argv[6]);
 
-	crystal.SaveIonDataToFile();
-
-
-	cout << "Ion data done" << endl;
-	// cleaning up
-    //crystal.FreeTemperatureArrays(); // maybe having this in, helps.
 	
-	cout << "Arrays freed" << endl;
+	int Timesteps					= atoi(argv[7]);
+	int StartRecordingOfHistogram	= atoi(argv[8]);
+	int StepsPrRFPeriode			= atoi(argv[9]);
+	int SizeOfHistogramsX			= atoi(argv[10]);
+	int SizeOfHistogramsY			= atoi(argv[11]);
+	int SizeOfHistogramsZ			= atoi(argv[12]); // Fra før
 
-	printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+	double OmegaRF					= strtod(argv[13], 0);
+	double r0						= strtod(argv[14], 0);
+	double z0						= strtod(argv[15], 0);
+	double eta						= strtod(argv[16], 0);
+	double binSize					= strtod(argv[17], 0);
+	double IonsCharge				= strtod(argv[18],0);
+	Simulator sim = Simulator();
 
-	cout << "Quest completed! I mean data saved!\n";
-	cout << "Press a key to end the program\n";
+	// Setting the values for the simulator.
+	sim.SetRFVoltage(RFVoltage);
+	sim.SetECVoltage(ECVoltage);
+	sim.SetSimTemperatur(SimulatedTemperatur);
+	sim.SetStartVel(StartVelOfIons);
+	sim.SetIonsNumber(NumberOfIons);
+	sim.SetMass(MassOfIons);
+	sim.SetTimesteps(Timesteps);
+	sim.SetStartTimeOfHistogram(StartRecordingOfHistogram);
+	sim.SetLengthOfRFPeriode(StepsPrRFPeriode);
+	sim.SetSizeOfHistograms(SizeOfHistogramsX,SizeOfHistogramsY,SizeOfHistogramsZ);
+	sim.SetR0(r0);
+	sim.SetZ0(z0);
+	sim.SetEta(eta);
+	sim.SetBinSize(binSize);
+	sim.SetOmegaRF(OmegaRF);
+	sim.SetIonsCharge(IonsCharge);
+	
+	/*
+	cout << "Parameter for simulation: " << endl
+		 << RFVoltage   << endl
+		 << ECVoltage << endl
+		 << SimulatedTemperatur << endl
+		 << StartVelOfIons << endl
+		 <<	NumberOfIons << endl
+		 << MassOfIons << endl
+		 << Timesteps << endl
+		 << StartRecordingOfHistogram << endl
+		 << StepsPrRFPeriode << endl
+		 << SizeOfHistogramsX<< endl
+		 << SizeOfHistogramsY<< endl
+		 << SizeOfHistogramsZ << endl
+		 << r0 << endl
+		 << z0 << endl
+		 << eta << endl
+		 << binSize << endl
+		 << OmegaRF << endl
+		<< IonsCharge << endl;
 
 	*/
+	cout << "Simulation setting up" << endl;
+	sim.StartSimulation();
 
-
-	cin.get();
 	return 0;
+	
+	}
+
+	else {
+
+	cout << "The program is trying to start, with more than one ion!" << endl;
+
+	double RFVoltage			= strtod(argv[1], 0);
+	double ECVoltage			= strtod(argv[2], 0);
+	double SimulatedTemperatur	= strtod(argv[3], 0);
+	double StartVelOfIons		= strtod(argv[4], 0);
+	int IonOneN					=  atoi(argv[5]);
+	int IonOneMass				=  atoi(argv[6]);
+	int IonTwoN					=  atoi(argv[7]);
+	int IonTwoMass				=  atoi(argv[8]);
+	
+	int Timesteps					= atoi(argv[9]);
+	int StartRecordingOfHistogram	= atoi(argv[10]);
+	int StepsPrRFPeriode			= atoi(argv[11]);
+	int SizeOfHistogramsX			= atoi(argv[12]);
+	int SizeOfHistogramsY			= atoi(argv[13]);
+	int SizeOfHistogramsZ			= atoi(argv[14]);
+
+	double OmegaRF					= strtod(argv[15], 0);
+	double r0						= strtod(argv[16], 0);
+	double z0						= strtod(argv[17], 0);
+	double eta						= strtod(argv[18], 0);
+	double binSize					= strtod(argv[19], 0);
+
+	double IonsOneCharge			= strtod(argv[20],0);
+	double IonsTwoCharge			= strtod(argv[21],0);
+
+	Simulator sim = Simulator();
+
+	// Setting the values for the simulator.
+	sim.SetRFVoltage(RFVoltage);
+	sim.SetECVoltage(ECVoltage);
+	sim.SetSimTemperatur(SimulatedTemperatur);
+	sim.SetStartVel(StartVelOfIons);
+	sim.SetIonsNumber(IonOneN,IonTwoN);
+	sim.SetMass(IonOneMass,IonTwoMass);
+	sim.SetTimesteps(Timesteps);
+	sim.SetStartTimeOfHistogram(StartRecordingOfHistogram);
+	sim.SetLengthOfRFPeriode(StepsPrRFPeriode);
+	sim.SetSizeOfHistograms(SizeOfHistogramsX,SizeOfHistogramsY,SizeOfHistogramsZ);
+	sim.SetR0(r0);
+	sim.SetZ0(z0);
+	sim.SetEta(eta);
+	sim.SetBinSize(binSize);
+	sim.SetOmegaRF(OmegaRF);
+	sim.SetIonsCharge(IonsOneCharge,IonsTwoCharge);
+
+	cout << "Parameter for simulation: " << " " << SizeOfHistogramsX << " "<< SizeOfHistogramsY << " "<<
+			SizeOfHistogramsZ << " "<< RFVoltage << " " << " "<< ECVoltage << " "<< SimulatedTemperatur <<endl;
+
+	cout << "Simulation setting up" << endl;
+	sim.StartSimulation();
+
+	return 0;
+	}
 }

@@ -10,35 +10,57 @@
 using namespace std;
 
 // Constructor
-FastEnsemble::FastEnsemble(int mass, int N, int histx,int histy, int histz)
+FastEnsemble::FastEnsemble(int mass, int N, int histx,int histy, int histz,double vel0, double c, double R0, double Z0, double ETA,double wRF, double BinSize)
 {
+	// Setting size of the histograms.
 	HistNx = histx;
 	HistNy = histy;
 	HistNz = histz;
+	ReducedMass = mass;
+	t0 = vel0;
+	r0 = R0;
+	z0 = Z0;
+	eta = ETA;
+	OmegaRF = wRF;
+	PixelToDistance = BinSize;
+
 	SteadyStateTemperature = SteadyStateTzSec;
 	NumberOfIons = N;
 	ions = new FastIon [NumberOfIons];
 
 	for(int n = 0; n < NumberOfIons; n++)
 	{
-		ions[n].initialize(mass);
+		ions[n].initialize(mass,c);
 	}
 }
 
-FastEnsemble::FastEnsemble(int m1, int n1, int m2, int n2)
+FastEnsemble::FastEnsemble(int m1, int n1, int m2, int n2,int histx,int histy, int histz,double vel0, double c1, double c2, double R0, double Z0, double ETA,double wRF, double BinSize)
 {
+	HistNx = histx;
+	HistNy = histy;
+	HistNz = histz;
 	SteadyStateTemperature = SteadyStateTzSec;
 	NumberOfIons=n1+n2;
+	IonOneN = n1;
+	IonTwoN = n2;
+	ReducedMass = (m1*m2)/(m1+m2);
+	t0 = vel0;
+	r0 = R0;
+	z0 = Z0;
+	eta = ETA;
+	OmegaRF = wRF;
+	PixelToDistance = BinSize;
+
 	ions = new FastIon [NumberOfIons];
 
 	for(int n = 0; n < NumberOfIons; n++) {
 		if (n<n1 ){
 		
-  		ions[n].initialize(m1); // setting mass, secular velocity and allocating memory for the ions pos and vel arrays
+  		ions[n].initialize(m1,c1); // setting mass, secular velocity and allocating memory for the ions pos and vel arrays
 		}
 		else {
 		
-  		ions[n].initialize(m2); // setting mass, secular velocity and allocating memory for the ions pos and vel arrays
+  		ions[n].initialize(m2,c2); // setting mass, secular velocity and allocating memory for the ions pos and vel arrays
 		}
 	}
 }
@@ -68,15 +90,15 @@ void FastEnsemble::CleanUpEnsemble()
 
 double FastEnsemble::GetCurrentTemperature()
 {
-	return (pow(VzSecRMS,2)+pow(VrSecRMS,2))*Mass(0)/Kb/3; // REMEBER TO CHANGE THIS FOR MASSES
+	return (pow(VzSecRMS,2)+pow(VrSecRMS,2))*Mass(0)/Kb/3; // REMEMBER TO CHANGE THIS FOR MASSES
 }
 
 void FastEnsemble::RescaleVelocityXYZ(double Total_V_x_rms,double Total_V_y_rms,double Total_V_z_rms)
 {
 		// calculate current temperature
-	double CurrentTempZ = (pow(Total_V_z_rms,2)*Mass(0))/(Kb);
-	double CurrentTempX = (pow(Total_V_x_rms,2)*Mass(0))/(Kb);
-	double CurrentTempY = (pow(Total_V_y_rms,2)*Mass(0))/(Kb);
+	double CurrentTempZ = (pow(Total_V_z_rms,2)*ReducedMass)/(Kb);
+	double CurrentTempX = (pow(Total_V_x_rms,2)*ReducedMass)/(Kb);
+	double CurrentTempY = (pow(Total_V_y_rms,2)*ReducedMass)/(Kb);
 
 	// rescale velocity distribution (Maybe change which fraction of SST is given)
 	 
@@ -254,6 +276,31 @@ void FastEnsemble::InitialiseCountHistogram()
 				CountHistogram[i][j][k] = 0;
 }
 
+void FastEnsemble::InitialiseHistograms()
+{
+	int SpeciesOfIons = 2;
+	histograms = new long double *** [SpeciesOfIons*3+3];
+	for (int x = 0; x < SpeciesOfIons*3+3; x++)
+	{
+		histograms[x] = new long double ** [HistNx];
+		for(int i = 0; i < HistNx;i++)
+		{
+			histograms[x][i] = new long double *[HistNy];
+			for(int j = 0; j < HistNy;j++)
+			{
+				histograms[x][i][j] = new long double [HistNz];
+			}
+		}
+	}
+
+	for (int x = 0; x<(SpeciesOfIons*3+3);x++)
+		for(int i=0; i < HistNx; i++)
+			for(int j=0; j < HistNy; j++)
+				for(int k=0; k < HistNz; k++)
+					histograms[x][i][j][k] = 0;
+
+}
+
 void FastEnsemble::InitialiseHistogram()
 {
 	//allocating memory to histogram
@@ -269,6 +316,65 @@ void FastEnsemble::InitialiseHistogram()
 			for(int k=0; k < HistNz; k++)
 				histogram[i][j][k] = 0;
 
+}
+
+void FastEnsemble::UpdateVelandCountHistograms()
+{ 
+	for (int i = 0; i < NumberOfIons; i++)
+	{
+
+		int Nx = ((int) ((ions[i].Position(0))/PixelToDistance+((double) HistNx)/2));
+		int Ny = ((int) ((ions[i].Position(1))/PixelToDistance+((double) HistNy)/2));
+		int Nz = ((int) ((ions[i].Position(2))/PixelToDistance+((double) HistNz)/2));
+
+		// Fyld i det samlede histogram
+		if (Nx < HistNx && Ny < HistNy && Nz < HistNz && Nx > 0 && Ny > 0 && Nz > 0)
+		{
+			histograms[7][Nx][Ny][Nz]++;
+			histograms[8][Nx][Ny][Nz]+= ((long double) pow(ions[i].Velocity(),2));
+		}
+		// Fyld i ion 1 histogram
+		if (Nx < HistNx && Ny < HistNy && Nz < HistNz && Nx > 0 && Ny > 0 && Nz > 0 && i < IonOneN)
+		{
+			histograms[1][Nx][Ny][Nz]++;
+			histograms[2][Nx][Ny][Nz]+= ((long double) pow(ions[i].Velocity(),2));
+		}
+		// Fyld i ion 2 histogram
+		if (Nx < HistNx && Ny < HistNy && Nz < HistNz && Nx > 0 && Ny > 0 && Nz > 0 && i > IonOneN)
+		{
+			histograms[4][Nx][Ny][Nz]++;
+			histograms[5][Nx][Ny][Nz]+= ((long double) pow(ions[i].Velocity(),2));
+		}
+
+	}
+}
+
+void FastEnsemble::UpdateHistograms()
+{ 
+	for (int i = 0; i < NumberOfIons; i++)
+	{
+
+		int Nx = ((int) ((ions[i].Position(0))/PixelToDistance+((double) HistNx)/2));
+		int Ny = ((int) ((ions[i].Position(1))/PixelToDistance+((double) HistNy)/2));
+		int Nz = ((int) ((ions[i].Position(2))/PixelToDistance+((double) HistNz)/2));
+
+		// Fyld i det samlede histogram
+		if (Nx < HistNx && Ny < HistNy && Nz < HistNz && Nx > 0 && Ny > 0 && Nz > 0)
+		{
+			histograms[6][Nx][Ny][Nz]++;
+		}
+		// Fyld i ion 1 histogram
+		if (Nx < HistNx && Ny < HistNy && Nz < HistNz && Nx > 0 && Ny > 0 && Nz > 0 && i < IonOneN)
+		{
+			histograms[0][Nx][Ny][Nz]++;
+		}
+		// Fyld i ion 2 histogram
+		if (Nx < HistNx && Ny < HistNy && Nz < HistNz && Nx > 0 && Ny > 0 && Nz > 0 && i > IonOneN)
+		{
+			histograms[3][Nx][Ny][Nz]++;
+		}
+
+	}
 }
 
 void FastEnsemble::UpdateHistogram()
@@ -353,10 +459,13 @@ double FastEnsemble::getRho0(double Vrf){
 
 void FastEnsemble::CrystalGenerator(double Vrf, double Vend)
 {
-	// Calculating pseudo trap frequencies
-	double wz2=2*eta*e*Vend/pow(z0,2)/Mass(0); // ERROR in formula from Magnus' thesis! he means potential and not electric potential.
-	double wr2=pow(e*Vrf/Mass(0)/OmegaRF,2)/2/pow(r0,4)-eta*e*Vend/Mass(0)/pow(z0,2);
 
+	// Overvej om det er rigtigt bare at bruge dne første ? (da masser og ladning nu ikke er de samme)
+	// Calculating pseudo trap frequencies
+	double wz2=2*eta*(ions[0].GetCharge())*Vend/pow(z0,2)/ions[0].GetMass(); // ERROR in formula from Magnus' thesis! he means potential and not electric potential.
+	double wr2=pow(e*Vrf/ions[0].GetMass()/OmegaRF,2)/2/pow(r0,4)-eta*ions[0].GetCharge()*Vend/ions[0].GetMass()/pow(z0,2);
+	
+	//cout << wz2 << " " << wr2 << endl;
 	// Solving plasma model aspect-ratio equation
 
 	double x0 = 0.001;
@@ -427,7 +536,6 @@ void FastEnsemble::CrystalGenerator(double Vrf, double Vend)
 
 		if(IonNumber < NumberOfIons)
 		{
-			//cout << NumberOfIons - IonNumber << " ion(s) have not been positioned\n";
 			L=L*1.005; // increasing crystal length with 0.5 percent
 		}
 		else
@@ -437,13 +545,9 @@ void FastEnsemble::CrystalGenerator(double Vrf, double Vend)
 			//cout << "All ions have been positioned\n";
 			CrystalNotDone=false;
 		}
-
-
-		//cout << a << " a_WS" <<endl;
 	}
 
-	// NORMALT ER DEN NUL! LIGE NU SVARER DEN TIL 1K !
-	// setting all ions to zero-velocity
+	// setting all ions velocity
 	for (int i = 0; i < NumberOfIons; i++)
 	{
 		for (int dim = 0; dim < 3; dim++)
@@ -455,7 +559,7 @@ void FastEnsemble::CrystalGenerator(double Vrf, double Vend)
 			else {
 				vel = 1.0;
 			}
-			ions[i].SetVelocity(dim, vel*5.5838);
+			ions[i].SetVelocity(dim, vel*sqrt((Kb*t0 )/ions[i].GetMass()));
 		}
 
 	}
@@ -525,6 +629,11 @@ void FastEnsemble::SaveIonDataToFile()
 	}
 	Ionfile.close();
     
+}
+
+double FastEnsemble::GetOmegaRF()
+{
+	return OmegaRF;
 }
 
 

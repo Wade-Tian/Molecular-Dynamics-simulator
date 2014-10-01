@@ -12,9 +12,9 @@
 
 double Ftot(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend);
 double Fcoulumb(FastEnsemble & ensemble, int N, int dim);
-double Ftrap(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend);
+double Ftrap(FastEnsemble & ensemble, int N, int TimeStep, int dim, double Vrf, double Vend,double dt);
 double Ffriction(FastEnsemble & ensemble, int N, int dim);
-double Fpseudo(FastEnsemble & ensemble, int N, int dim, double Vrf, double Vend);
+//double Fpseudo(FastEnsemble & ensemble, int N, int dim, double Vrf, double Vend);
 
 
 
